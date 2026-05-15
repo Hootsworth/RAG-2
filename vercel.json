@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/public/:path*", "destination": "/:path*" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}
