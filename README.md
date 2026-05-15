@@ -1,8 +1,20 @@
 # Memory OS: Persona Drift + Offline Intent + Conflict-Aware RAG
 
-Memory OS is a compact end-to-end project submission for the requested RAG system. It includes separate modules for the four requested parts, a browser demo, tests, a one-page system design doc, a Loom walkthrough script, hosted-demo instructions, and a self-evaluation sheet.
+Memory OS is my end-to-end project for building a more trustworthy personal-memory RAG layer. I focused on four things that matter in personal AI: temporal persona drift, offline intent classification, contradiction-aware retrieval, and privacy-conscious sync design.
 
 The system is intentionally modular: retrieval, ranking, drift analysis, and classification can be independently upgraded without changing the external interfaces.
+
+## Product Thesis
+
+I did not build this as a generic chatbot wrapper. I built it as the evidence layer a personal AI system would need before it should answer sensitive questions about someone’s life.
+
+My main decisions were:
+
+- I treated personality as temporal instead of static. A user can be curious on Day 1, frustrated on Day 4, and playful on Day 7.
+- I kept the intent classifier fully offline because routing private messages should not require an external LLM call.
+- I made contradictions visible instead of flattening them into one clean but potentially false answer.
+- I designed sync so raw memory can stay local while only encrypted summaries and metadata move across devices.
+- I kept every module swappable so better retrieval, ranking, or classification models can replace the current implementation later.
 
 ## Architecture
 
@@ -26,7 +38,6 @@ flowchart TD
 - Part 4: System Design Doc in `docs/system-design.md`
 - Demo UI in `public/`
 - Tests in `tests/`
-- Loom script in `docs/loom-walkthrough-script.md`
 - Self-evaluation in `docs/self-evaluation.md`
 - Hosting instructions in `docs/hosted-demo.md`
 
@@ -36,7 +47,7 @@ flowchart TD
 npm test
 npm run demo
 npm run benchmark
-npm start
+npm run static
 ```
 
 Then open `http://localhost:5173/`. The backend also keeps the older local URL working at `http://localhost:5173/public/#drift`.
@@ -65,6 +76,8 @@ Backend endpoints:
 
 The backend uses a simple file-backed JSON store in `data/` for demo persistence. `data/` is gitignored. In a real deployment, this can be swapped for Postgres, SQLite-on-disk, or encrypted object storage without changing the frontend API.
 
+This `main` branch is intentionally static-first. It does not require a backend to run. A separate `production-backend` branch contains the backend-backed version for Render or similar providers.
+
 ## Part 1: Adaptive Persona Engine
 
 The detector accepts Round 1-style persona JSON using flexible keys like `messages`, `conversations`, `entries`, `timestamp`, `text`, `topic`, and `people`.
@@ -84,7 +97,7 @@ Day 5 -> anxious & reflective
 Day 7 -> playful & casual
 ```
 
-Triggers are extracted in this order: mentioned person, explicit topic, known event/topic term, fallback keyword. That makes outputs easy to defend in the Loom: if the drift says “trigger: sister,” the evidence is visible in the day’s source messages.
+Triggers are extracted in this order: mentioned person, explicit topic, known event/topic term, fallback keyword. I made this choice so the timeline is explainable: if the drift says “trigger: sister,” the evidence is visible in the day’s source messages.
 
 ## Part 2: Offline Intent Classifier
 
@@ -99,6 +112,8 @@ The classifier is a lightweight interpretable probabilistic text model trained f
 I intentionally prioritized interpretability, deterministic latency, tiny artifact size, and offline reliability over marginal accuracy gains from transformer architectures. The classifier architecture is swappable; the surrounding interface is model-agnostic.
 
 The implementation has no OpenAI/Gemini path. The tests assert both the <50MB size target and <200ms per-message latency target.
+
+This was a deliberate systems decision. For this module, predictable local routing is more important than chasing marginal accuracy with a larger model that adds latency, hosting cost, or privacy risk.
 
 ## Benchmarks
 
@@ -134,9 +149,44 @@ Recency was weighted highest because memory assistants should prioritize current
 
 It then detects contradiction facets like `relationship_state` and `logistics`. Instead of flattening the answer into a fake single truth, it returns a merged answer with contradiction receipts.
 
+This is the most important retrieval decision I made. Personal memory is often inconsistent because people change their mind, plans change, and emotions evolve. The system should say “there is conflicting evidence” instead of pretending the newest or loudest chunk is the whole truth.
+
 ## Part 4: System Design
 
 The sync architecture is in `docs/system-design.md`. The core decision is privacy-first: raw journal content and exact embeddings stay local by default. The cloud stores encrypted sync envelopes, not a searchable memory database.
+
+I intentionally designed the cloud as a courier, not the owner of memory. That makes first restore slightly less convenient because local indexes may need to be rebuilt, but it gives the project a much stronger privacy posture.
+
+## Static vs Backend Versions
+
+There are two versions of the project:
+
+| Branch | Purpose | Hosting |
+| --- | --- | --- |
+| `main` | Static submission demo | GitHub Pages, Netlify, Cloudflare Pages, Vercel |
+| `production-backend` | Backend-backed production shape | Render or another Node backend provider |
+
+I kept `main` static because it is the most reliable version for evaluation: no database credentials, no server cold starts, and no provider setup required. The `production-backend` branch exists to show how the same architecture becomes a production-style web app with API boundaries and persistence.
+
+I will not start the backend automatically as part of setup. The backend branch is ready for your hosted provider workflow instead.
+
+## Hosting
+
+For GitHub Pages on `main`:
+
+1. Go to repository `Settings -> Pages`.
+2. Choose `Deploy from branch`.
+3. Select branch `main`.
+4. Select folder `/root`.
+5. Save.
+
+The root `index.html` redirects to `public/`, so the demo opens at:
+
+```text
+https://hootsworth.github.io/RAG-2/
+```
+
+For a backend-hosted version, use the `production-backend` branch with Render or another free Node provider. That branch includes `render.yaml`.
 
 ## Repository Map
 
@@ -158,7 +208,6 @@ public/
   styles.css
 docs/
   system-design.md
-  loom-walkthrough-script.md
   self-evaluation.md
   hosted-demo.md
 scripts/
@@ -176,7 +225,6 @@ server.js
 
 - GitHub repo: push this folder to GitHub.
 - Hosted demo: deploy `public/` using Netlify or GitHub Pages.
-- Loom walkthrough: use `docs/loom-walkthrough-script.md`.
 - Self-evaluation: submit `docs/self-evaluation.md`.
 
 ## Evaluation Notes
