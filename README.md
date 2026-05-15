@@ -4,6 +4,14 @@ Memory OS is my end-to-end project for building a more trustworthy personal-memo
 
 The system is intentionally modular: retrieval, ranking, drift analysis, and classification can be independently upgraded without changing the external interfaces.
 
+## Project Links
+
+- GitHub repo: [https://github.com/Hootsworth/RAG-2](https://github.com/Hootsworth/RAG-2)
+- GitHub Pages demo: [https://hootsworth.github.io/RAG-2/](https://hootsworth.github.io/RAG-2/)
+- Vercel backend-backed demo: [https://rag-2-theta.vercel.app](https://rag-2-theta.vercel.app)
+
+I used GitHub Pages for the lightweight static demo and Vercel for the backend-backed version. Vercel is only used as the hosted API/runtime layer; the classifier and RAG logic remain the same modular code paths.
+
 ## Product Thesis
 
 I did not build this as a generic chatbot wrapper. I built it as the evidence layer a personal AI system would need before it should answer sensitive questions about someone’s life.
