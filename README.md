@@ -39,7 +39,7 @@ npm run benchmark
 npm start
 ```
 
-Then open `http://localhost:5173/public/`.
+Then open `http://localhost:5173/public/`. The root `index.html` also redirects to `public/` for GitHub Pages branch deploys.
 
 ## Part 1: Adaptive Persona Engine
 
@@ -129,6 +129,7 @@ public/
   app.js
   demo-engine.js
   styles.css
+index.html
 docs/
   system-design.md
   loom-walkthrough-script.md
