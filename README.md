@@ -39,7 +39,31 @@ npm run benchmark
 npm start
 ```
 
-Then open `http://localhost:5173/public/`.
+Then open `http://localhost:5173/`. The backend also keeps the older local URL working at `http://localhost:5173/public/#drift`.
+
+## Production Backend
+
+This branch adds a production-shaped Node backend without changing the core engine contracts.
+
+```text
+Frontend screen -> /api/persona/drift -> Persona Drift Engine
+Frontend screen -> /api/intent/classify -> Offline Intent Classifier
+Frontend screen -> /api/rag/resolve -> Conflict-Aware Retriever
+Frontend screen -> /api/memory -> File-backed JSON memory store
+```
+
+Backend endpoints:
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/api/health` | GET | Backend health and mode check |
+| `/api/persona/drift` | GET | Returns timeline and drift triggers |
+| `/api/intent/classify` | POST | Classifies a message offline |
+| `/api/rag/resolve` | POST | Resolves a query with contradiction receipts |
+| `/api/memory` | GET | Returns the current seeded memory store |
+| `/api/memory/messages` | POST | Adds a message to the persisted persona store |
+
+The backend uses a simple file-backed JSON store in `data/` for demo persistence. `data/` is gitignored. In a real deployment, this can be swapped for Postgres, SQLite-on-disk, or encrypted object storage without changing the frontend API.
 
 ## Part 1: Adaptive Persona Engine
 
@@ -118,6 +142,8 @@ The sync architecture is in `docs/system-design.md`. The core decision is privac
 
 ```text
 src/
+  server/
+    app.js
   topic_splitter.js
   persona_drift_detector.js
   intent_classifier.js
@@ -127,6 +153,7 @@ src/
 public/
   index.html
   app.js
+  config.js
   demo-engine.js
   styles.css
 docs/
@@ -141,6 +168,8 @@ tests/
 .github/workflows/
   pages.yml
 netlify.toml
+render.yaml
+server.js
 ```
 
 ## Submission Checklist

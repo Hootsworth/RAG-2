@@ -9,6 +9,7 @@ import {
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
+const API_BASE = window.MEMORY_OS_API_BASE || "";
 
 const SCREENS = {
   drift: {
@@ -50,7 +51,7 @@ function renderRoute() {
 }
 
 function renderDrift() {
-  const { timeline, drifts } = detectPersonaDrift(ROUND_1_PERSONA_JSON);
+  return apiGet("/api/persona/drift", () => detectPersonaDrift(ROUND_1_PERSONA_JSON)).then(({ timeline, drifts }) => {
   $("#timeline").innerHTML = timeline
     .map(
       (item) => `<div class="day">
@@ -70,10 +71,13 @@ function renderDrift() {
       </article>`
     )
     .join("");
+  });
 }
 
 function renderIntent() {
-  const result = classifyIntent($("#message").value, DEFAULT_INTENT_MODEL);
+  return apiPost("/api/intent/classify", { message: $("#message").value }, () =>
+    classifyIntent($("#message").value, DEFAULT_INTENT_MODEL)
+  ).then((result) => {
   $("#model-size").textContent = `${Math.round(result.modelBytes / 1024)} KB model`;
   $("#intent-result").innerHTML = `<strong>${result.label}</strong>
     <span>${result.confidence} confidence</span>
@@ -81,10 +85,15 @@ function renderIntent() {
     ${Object.entries(result.scores)
       .map(([label, score]) => `<div class="bar"><span>${label}</span><i style="width:${score * 100}%"></i><b>${score}</b></div>`)
       .join("")}`;
+  });
 }
 
 function renderResolver() {
-  const resolved = resolveRagConflict($("#query").value, SISTER_QUERY_CHUNKS, { now: "2026-05-15T00:00:00Z" });
+  return apiPost(
+    "/api/rag/resolve",
+    { query: $("#query").value, now: "2026-05-15T00:00:00Z" },
+    () => resolveRagConflict($("#query").value, SISTER_QUERY_CHUNKS, { now: "2026-05-15T00:00:00Z" })
+  ).then((resolved) => {
   $("#answer").textContent = resolved.answer;
   $("#chunks").innerHTML = resolved.rankedChunks
     .map((chunk, index) => {
@@ -98,12 +107,48 @@ function renderResolver() {
       </article>`;
     })
     .join("");
+  });
 }
 
 function renderAll() {
+  renderApiStatus();
   renderDrift();
   renderIntent();
   renderResolver();
+}
+
+async function renderApiStatus() {
+  try {
+    const health = await apiGet("/api/health", () => null);
+    if (!health?.ok) throw new Error("offline");
+    $("#api-status").textContent = "Backend connected";
+  } catch {
+    $("#api-status").textContent = "Browser fallback mode";
+  }
+}
+
+async function apiGet(path, fallback) {
+  try {
+    const response = await fetch(`${API_BASE}${path}`);
+    if (!response.ok) throw new Error(`API ${response.status}`);
+    return response.json();
+  } catch {
+    return fallback();
+  }
+}
+
+async function apiPost(path, body, fallback) {
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) throw new Error(`API ${response.status}`);
+    return response.json();
+  } catch {
+    return fallback();
+  }
 }
 
 $("#classify").addEventListener("click", renderIntent);
