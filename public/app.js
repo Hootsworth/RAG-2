@@ -4,6 +4,46 @@ import { resolveRagConflict } from "../src/rag_conflict_resolver.js";
 import { ROUND_1_PERSONA_JSON, SISTER_QUERY_CHUNKS } from "../src/sample_data.js";
 
 const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+const SCREENS = {
+  drift: {
+    title: "Persona Drift Project",
+    subtitle: "Track how the user's mood and tone move across days, with trigger receipts."
+  },
+  intent: {
+    title: "Offline Intent Classifier Project",
+    subtitle: "Classify messages locally into reminder, emotional-support, action-item, small-talk, or unknown."
+  },
+  resolver: {
+    title: "Conflict Resolution RAG Project",
+    subtitle: "Answer the sister question by ranking evidence and exposing contradictions."
+  },
+  design: {
+    title: "System Design Project",
+    subtitle: "Show what syncs, what stays local, and how memory conflicts resolve."
+  }
+};
+
+function currentRoute() {
+  const route = window.location.hash.replace("#", "");
+  return SCREENS[route] ? route : "drift";
+}
+
+function renderRoute() {
+  const route = currentRoute();
+  const meta = SCREENS[route];
+  $("#screen-title").textContent = meta.title;
+  $("#screen-subtitle").textContent = meta.subtitle;
+
+  $$("[data-screen]").forEach((screen) => {
+    screen.hidden = screen.dataset.screen !== route;
+  });
+
+  $$("[data-route]").forEach((link) => {
+    link.classList.toggle("active", link.dataset.route === route);
+  });
+}
 
 function renderDrift() {
   const { timeline, drifts } = detectPersonaDrift(ROUND_1_PERSONA_JSON);
@@ -65,4 +105,6 @@ function renderAll() {
 $("#classify").addEventListener("click", renderIntent);
 $("#resolve").addEventListener("click", renderResolver);
 $("#rerun").addEventListener("click", renderAll);
+window.addEventListener("hashchange", renderRoute);
 renderAll();
+renderRoute();

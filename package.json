@@ -1,7 +1,7 @@
 {
-  "name": "memory-os-rag-challenge",
+  "name": "memory-os-rag-project",
   "version": "1.0.0",
-  "description": "Offline persona drift, intent classification, and conflict-aware RAG demo.",
+  "description": "Offline persona drift, intent classification, and conflict-aware RAG project.",
   "type": "module",
   "scripts": {
     "start": "python3 -m http.server 5173",

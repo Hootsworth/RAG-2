@@ -1,6 +1,6 @@
 # Memory OS: Persona Drift + Offline Intent + Conflict-Aware RAG
 
-Memory OS is a compact end-to-end submission for the RAG challenge. It includes separate modules for the four requested parts, a browser demo, tests, a one-page system design doc, a Loom walkthrough script, hosted-demo instructions, and a self-evaluation sheet.
+Memory OS is a compact end-to-end project submission for the requested RAG system. It includes separate modules for the four requested parts, a browser demo, tests, a one-page system design doc, a Loom walkthrough script, hosted-demo instructions, and a self-evaluation sheet.
 
 ## What Is Included
 
@@ -56,7 +56,7 @@ The classifier is a lightweight multinomial Naive Bayes model trained from local
 - `small-talk`
 - `unknown`
 
-Why this unconventional choice instead of a tiny transformer? For the challenge constraints, a transparent model is a strength: the artifact is tiny, auditable, deterministic, CPU-only, and has no OpenAI/Gemini path. The tests assert both the <50MB size target and <200ms per-message latency target.
+Why this unconventional choice instead of a tiny transformer? For the project constraints, a transparent model is a strength: the artifact is tiny, auditable, deterministic, CPU-only, and has no OpenAI/Gemini path. The tests assert both the <50MB size target and <200ms per-message latency target.
 
 ## Part 3: Conflict Resolution in RAG
 

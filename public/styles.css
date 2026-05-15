@@ -86,6 +86,13 @@ nav a:hover {
   border-color: var(--teal);
 }
 
+nav a.active {
+  background: #edf7f6;
+  border-color: var(--teal);
+  color: var(--teal-dark);
+  font-weight: 750;
+}
+
 .status {
   margin-top: auto;
   border: 1px solid var(--line);
@@ -100,6 +107,7 @@ main {
   display: grid;
   gap: 18px;
   align-content: start;
+  min-width: 0;
 }
 
 .topbar,
@@ -124,14 +132,40 @@ main {
   gap: 16px;
 }
 
-.wide {
-  grid-column: 1 / -1;
+.screen {
+  min-height: calc(100vh - 116px);
 }
 
-.grid {
+.screen[hidden] {
+  display: none;
+}
+
+.screen-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 0.8fr) minmax(420px, 1.2fr);
   gap: 18px;
+  min-height: calc(100vh - 116px);
+}
+
+.drift-screen,
+.resolver-screen,
+.design-screen {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(420px, 1.1fr);
+}
+
+.intent-screen {
+  grid-template-columns: minmax(340px, 0.7fr) minmax(480px, 1.3fr);
+}
+
+.hero-panel,
+.compose-panel,
+.query-panel {
+  align-content: start;
+}
+
+.result-panel,
+.evidence-panel {
+  align-content: start;
 }
 
 button {
@@ -162,7 +196,7 @@ textarea {
 
 .timeline {
   display: grid;
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  grid-template-columns: 1fr;
   border: 1px solid var(--line);
 }
 
@@ -170,11 +204,11 @@ textarea {
   padding: 14px;
   display: grid;
   gap: 8px;
-  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .day:last-child {
-  border-right: 0;
+  border-bottom: 0;
 }
 
 .day span {
@@ -184,17 +218,23 @@ textarea {
 
 .drift-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 
 .drift-grid article,
 .chunks article,
-.result {
+.result,
+.decision-list article {
   border: 1px solid var(--line);
   padding: 14px;
   display: grid;
   gap: 8px;
+}
+
+.decision-list {
+  display: grid;
+  gap: 10px;
 }
 
 .result strong {
@@ -250,7 +290,11 @@ textarea {
     border-bottom: 1px solid var(--line);
   }
 
-  .grid,
+  .screen-grid,
+  .drift-screen,
+  .resolver-screen,
+  .design-screen,
+  .intent-screen,
   .timeline,
   .drift-grid {
     grid-template-columns: 1fr;

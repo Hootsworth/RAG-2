@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Memory OS RAG Challenge</title>
+    <title>Memory OS RAG Project</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -12,14 +12,14 @@
         <div class="mark">M</div>
         <div>
           <h1>Memory OS</h1>
-          <p>Offline RAG challenge demo</p>
+          <p>Offline RAG project demo</p>
         </div>
       </div>
       <nav>
-        <a href="#drift">Persona Drift</a>
-        <a href="#intent">Intent Classifier</a>
-        <a href="#resolver">Sister Resolver</a>
-        <a href="#design">System Design</a>
+        <a href="#drift" data-route="drift">Persona Drift</a>
+        <a href="#intent" data-route="intent">Intent Classifier</a>
+        <a href="#resolver" data-route="resolver">Sister Resolver</a>
+        <a href="#design" data-route="design">System Design</a>
       </nav>
       <div class="status">
         <strong>Local-only mode</strong>
@@ -30,53 +30,105 @@
     <main>
       <header class="topbar">
         <div>
-          <h2>Adaptive Persona + Offline Intent + Conflict RAG</h2>
-          <p>All sample inference runs in this browser tab.</p>
+          <h2 id="screen-title">Persona Drift</h2>
+          <p id="screen-subtitle">Track day-level mood shifts from persona JSON.</p>
         </div>
         <button id="rerun">Refresh</button>
       </header>
 
-      <section id="drift" class="panel wide">
-        <div class="section-title">
-          <h3>Persona Drift Timeline</h3>
-          <span>day-level, trigger-aware</span>
-        </div>
-        <div id="timeline" class="timeline"></div>
-        <div id="drifts" class="drift-grid"></div>
-      </section>
-
-      <section class="grid">
-        <div id="intent" class="panel">
-          <div class="section-title">
-            <h3>Offline Intent Classifier</h3>
-            <span id="model-size"></span>
+      <section id="drift" class="screen" data-screen="drift">
+        <div class="screen-grid drift-screen">
+          <div class="panel hero-panel">
+            <div class="section-title">
+              <h3>Persona Drift Timeline</h3>
+              <span>day-level, trigger-aware</span>
+            </div>
+            <div id="timeline" class="timeline"></div>
           </div>
-          <textarea id="message">I feel overwhelmed and need someone to listen tonight.</textarea>
-          <button id="classify">Classify</button>
-          <div id="intent-result" class="result"></div>
-        </div>
-
-        <div id="resolver" class="panel">
-          <div class="section-title">
-            <h3>Conflict Resolver</h3>
-            <span>recency + emotion + relevance</span>
+          <div class="panel">
+            <div class="section-title">
+              <h3>Detected Drifts</h3>
+              <span>topic, event, or person</span>
+            </div>
+            <div id="drifts" class="drift-grid"></div>
           </div>
-          <input id="query" value="Did I mention anything about my sister?" />
-          <button id="resolve">Resolve</button>
-          <p id="answer" class="answer"></p>
-          <div id="chunks" class="chunks"></div>
         </div>
       </section>
 
-      <section id="design" class="panel wide">
-        <div class="section-title">
-          <h3>Sync Architecture</h3>
-          <span>one-page doc lives in docs/system-design.md</span>
+      <section id="intent" class="screen" data-screen="intent">
+        <div class="screen-grid intent-screen">
+          <div class="panel compose-panel">
+            <div class="section-title">
+              <h3>Message Probe</h3>
+              <span>CPU-only inference</span>
+            </div>
+            <textarea id="message">I feel overwhelmed and need someone to listen tonight.</textarea>
+            <button id="classify">Classify</button>
+          </div>
+          <div class="panel result-panel">
+            <div class="section-title">
+              <h3>Offline Intent Classifier</h3>
+              <span id="model-size"></span>
+            </div>
+            <div id="intent-result" class="result"></div>
+          </div>
         </div>
-        <pre class="diagram">Device vault -> encrypted sync queue -> cloud relay
+      </section>
+
+      <section id="resolver" class="screen" data-screen="resolver">
+        <div class="screen-grid resolver-screen">
+          <div class="panel query-panel">
+            <div class="section-title">
+              <h3>Sister Query</h3>
+              <span>contradiction-aware answer</span>
+            </div>
+            <input id="query" value="Did I mention anything about my sister?" />
+            <button id="resolve">Resolve</button>
+            <p id="answer" class="answer"></p>
+          </div>
+          <div class="panel evidence-panel">
+            <div class="section-title">
+              <h3>Ranked Evidence</h3>
+              <span>recency + emotion + relevance</span>
+            </div>
+            <div id="chunks" class="chunks"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="design" class="screen" data-screen="design">
+        <div class="screen-grid design-screen">
+          <div class="panel">
+            <div class="section-title">
+              <h3>Sync Architecture</h3>
+              <span>one-page doc lives in docs/system-design.md</span>
+            </div>
+            <pre class="diagram">Device vault -> encrypted sync queue -> cloud relay
      |                 |                    |
  local embeddings   CRDT merge       account restore
  raw journal stays local unless explicitly exported</pre>
+          </div>
+          <div class="panel">
+            <div class="section-title">
+              <h3>Boundary Decisions</h3>
+              <span>privacy-first defaults</span>
+            </div>
+            <div class="decision-list">
+              <article>
+                <b>Syncs</b>
+                <p>Encrypted metadata, topic checkpoints, drift summaries, contradiction flags, and compact user-approved memory summaries.</p>
+              </article>
+              <article>
+                <b>Stays Local</b>
+                <p>Raw journal text, attachments, exact embeddings, device keys, and any item marked local-only.</p>
+              </article>
+              <article>
+                <b>Conflict Rule</b>
+                <p>Same-field edits become visible conflict records. RAG answers merge evidence instead of pretending contradictions do not exist.</p>
+              </article>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
