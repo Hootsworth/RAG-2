@@ -7,7 +7,7 @@
 - Intent classification is fully offline and has no external API path.
 - Classifier model is far below 50MB and runs under the 200ms CPU target in tests.
 - RAG resolver ranks relevant chunks and flags contradictory sister context.
-- README, system design, Loom script, and hosted-demo instructions are included.
+- README, system design, hosted-demo instructions, and self-evaluation notes are included.
 
 ## Tradeoffs
 
