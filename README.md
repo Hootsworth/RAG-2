@@ -39,7 +39,6 @@ flowchart TD
 - Demo UI in `public/`
 - Tests in `tests/`
 - Self-evaluation in `docs/self-evaluation.md`
-- Hosting instructions in `docs/hosted-demo.md`
 
 ## Quick Start
 
@@ -49,8 +48,6 @@ npm run demo
 npm run benchmark
 npm run static
 ```
-
-Then open `http://localhost:5173/`. The backend also keeps the older local URL working at `http://localhost:5173/public/#drift`.
 
 ## Production Backend
 
@@ -75,8 +72,6 @@ Backend endpoints:
 | `/api/memory/messages` | POST | Adds a message to the persisted persona store |
 
 The backend uses a simple file-backed JSON store in `data/` for demo persistence. `data/` is gitignored. In a real deployment, this can be swapped for Postgres, SQLite-on-disk, or encrypted object storage without changing the frontend API.
-
-This `main` branch is intentionally static-first. It does not require a backend to run. A separate `production-backend` branch contains the backend-backed version for Render or similar providers.
 
 ## Part 1: Adaptive Persona Engine
 
@@ -161,32 +156,12 @@ I intentionally designed the cloud as a courier, not the owner of memory. That m
 
 There are two versions of the project:
 
-| Branch | Purpose | Hosting |
-| --- | --- | --- |
-| `main` | Static submission demo | GitHub Pages, Netlify, Cloudflare Pages, Vercel |
-| `production-backend` | Backend-backed production shape | Render or another Node backend provider |
+| Branch | Purpose |
+| --- | --- |
+| `main` | Static submission demo with no backend requirement |
+| `production-backend` | Backend-backed production shape with API boundaries |
 
-I kept `main` static because it is the most reliable version for evaluation: no database credentials, no server cold starts, and no provider setup required. The `production-backend` branch exists to show how the same architecture becomes a production-style web app with API boundaries and persistence.
-
-I will not start the backend automatically as part of setup. The backend branch is ready for your hosted provider workflow instead.
-
-## Hosting
-
-For GitHub Pages on `main`:
-
-1. Go to repository `Settings -> Pages`.
-2. Choose `Deploy from branch`.
-3. Select branch `main`.
-4. Select folder `/root`.
-5. Save.
-
-The root `index.html` redirects to `public/`, so the demo opens at:
-
-```text
-https://hootsworth.github.io/RAG-2/
-```
-
-For a backend-hosted version, use the `production-backend` branch with Render or another free Node provider. That branch includes `render.yaml`.
+I kept `main` static because it is the most reliable form of the core system: the logic is visible, testable, and not dependent on provider credentials. The `production-backend` branch shows how the same architecture becomes a production-style web app with API boundaries and persistence.
 
 ## Repository Map
 
@@ -209,7 +184,6 @@ public/
 docs/
   system-design.md
   self-evaluation.md
-  hosted-demo.md
 scripts/
   benchmark.js
 tests/
@@ -224,7 +198,6 @@ server.js
 ## Submission Checklist
 
 - GitHub repo: push this folder to GitHub.
-- Hosted demo: deploy `public/` using Netlify or GitHub Pages.
 - Self-evaluation: submit `docs/self-evaluation.md`.
 
 ## Evaluation Notes
