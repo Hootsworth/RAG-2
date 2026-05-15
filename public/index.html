@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory OS RAG Challenge</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <aside class="rail">
+      <div class="brand">
+        <div class="mark">M</div>
+        <div>
+          <h1>Memory OS</h1>
+          <p>Offline RAG challenge demo</p>
+        </div>
+      </div>
+      <nav>
+        <a href="#drift">Persona Drift</a>
+        <a href="#intent">Intent Classifier</a>
+        <a href="#resolver">Sister Resolver</a>
+        <a href="#design">System Design</a>
+      </nav>
+      <div class="status">
+        <strong>Local-only mode</strong>
+        <span>No OpenAI or Gemini calls in classifier</span>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <h2>Adaptive Persona + Offline Intent + Conflict RAG</h2>
+          <p>All sample inference runs in this browser tab.</p>
+        </div>
+        <button id="rerun">Refresh</button>
+      </header>
+
+      <section id="drift" class="panel wide">
+        <div class="section-title">
+          <h3>Persona Drift Timeline</h3>
+          <span>day-level, trigger-aware</span>
+        </div>
+        <div id="timeline" class="timeline"></div>
+        <div id="drifts" class="drift-grid"></div>
+      </section>
+
+      <section class="grid">
+        <div id="intent" class="panel">
+          <div class="section-title">
+            <h3>Offline Intent Classifier</h3>
+            <span id="model-size"></span>
+          </div>
+          <textarea id="message">I feel overwhelmed and need someone to listen tonight.</textarea>
+          <button id="classify">Classify</button>
+          <div id="intent-result" class="result"></div>
+        </div>
+
+        <div id="resolver" class="panel">
+          <div class="section-title">
+            <h3>Conflict Resolver</h3>
+            <span>recency + emotion + relevance</span>
+          </div>
+          <input id="query" value="Did I mention anything about my sister?" />
+          <button id="resolve">Resolve</button>
+          <p id="answer" class="answer"></p>
+          <div id="chunks" class="chunks"></div>
+        </div>
+      </section>
+
+      <section id="design" class="panel wide">
+        <div class="section-title">
+          <h3>Sync Architecture</h3>
+          <span>one-page doc lives in docs/system-design.md</span>
+        </div>
+        <pre class="diagram">Device vault -> encrypted sync queue -> cloud relay
+     |                 |                    |
+ local embeddings   CRDT merge       account restore
+ raw journal stays local unless explicitly exported</pre>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

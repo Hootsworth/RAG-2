@@ -1,0 +1,20 @@
+{
+  "name": "memory-os-rag-challenge",
+  "version": "1.0.0",
+  "description": "Offline persona drift, intent classification, and conflict-aware RAG demo.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 5173",
+    "test": "node --test tests/*.test.js",
+    "demo": "node src/index.js"
+  },
+  "keywords": [
+    "rag",
+    "offline",
+    "persona",
+    "intent-classifier",
+    "conflict-resolution"
+  ],
+  "author": "",
+  "license": "MIT"
+}
