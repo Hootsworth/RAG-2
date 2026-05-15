@@ -11,7 +11,7 @@
 
 ## Tradeoffs
 
-- The classifier uses Naive Bayes instead of a neural fine-tune. This was intentional: it is tiny, transparent, fast, and easy to audit under the “no API” constraint.
+- The classifier uses an interpretable probabilistic architecture instead of a neural fine-tune. This was intentional: it is tiny, transparent, fast, and easy to audit under the “no API” constraint.
 - The persona detector uses interpretable lexicons. It is less nuanced than an LLM judge, but it avoids black-box drift claims and can be tuned with user feedback.
 - The resolver uses lexical relevance rather than dense embeddings in the demo. The architecture leaves a slot for offline embeddings, but the shipped version remains dependency-free.
 

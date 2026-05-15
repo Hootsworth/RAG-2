@@ -1,7 +1,11 @@
-import { detectPersonaDrift } from "../src/persona_drift_detector.js";
-import { classifyIntent, DEFAULT_INTENT_MODEL } from "../src/intent_classifier.js";
-import { resolveRagConflict } from "../src/rag_conflict_resolver.js";
-import { ROUND_1_PERSONA_JSON, SISTER_QUERY_CHUNKS } from "../src/sample_data.js";
+import {
+  detectPersonaDrift,
+  classifyIntent,
+  DEFAULT_INTENT_MODEL,
+  resolveRagConflict,
+  ROUND_1_PERSONA_JSON,
+  SISTER_QUERY_CHUNKS
+} from "./demo-engine.js";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
